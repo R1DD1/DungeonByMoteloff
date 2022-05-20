@@ -1,0 +1,5 @@
+name: Tycoon
+main: ru.cristalix.tycoon.App
+version: 1.0.0
+depend:
+  - CoreAPI

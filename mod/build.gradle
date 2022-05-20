@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'dev.implario.bundler' version '4.0.1'
+}
+
+dependencies {
+    compileOnly 'ru.cristalix:client-api:live-SNAPSHOT'
+    implementation 'ru.cristalix:uiengine:1.0.2'
+    implementation 'ru.cristalix:client-sdk:live-SNAPSHOT'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
+    implementation 'implario:humanize:1.1.3'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+bundle {
+    modName 'Tycoon Mod'
+    mainClass 'ru.cristalix.tycoon.App'
+    author 'Cristalix'
+    // dontoptimize()
+    keep('class ru.cristalix.data.** { *; }')
+    keep('class ru.cristalix.** { *; }')
+}
+
+jar {
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.directory ? it : zipTree(it) }
+    }
+}
+
+task moveToModsDir(type: Copy) {
+    group 'build'
+    dependsOn jar
+    from jar.archiveFile.get().asFile
+    def dataDir = System.getenv("APPDATA") ?: System.getProperty("user.home")
+    def modsDir = file "C:/Users/func/Desktop/mg-client/game/mods"
+    modsDir.mkdirs()
+    into modsDir
+}

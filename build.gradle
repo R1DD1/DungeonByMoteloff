@@ -1,0 +1,54 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
+}
+
+apply plugin: 'maven-publish'
+
+allprojects {
+    apply plugin: 'java-library'
+    group 'ru.cristalix'
+    version '1.0-SNAPSHOT'
+    repositories {
+        maven {
+            url 'https://repo.c7x.ru/repository/maven-public/'
+            credentials {
+                username = System.getenv("CRI_REPO_LOGIN") ?: project.properties["CRI_REPO_LOGIN"] as String
+                password = System.getenv("CRI_REPO_PASSWORD") ?: project.properties["CRI_REPO_PASSWORD"] as String
+            }
+        }
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url 'http://repo.c7x.ru/repository/maven-stapshots/'
+            credentials {
+                username = System.getenv("CRI_REPO_LOGIN") ?: project.properties["CRI_REPO_LOGIN"] as String
+                password = System.getenv("CRI_REPO_PASSWORD") ?: project.properties["CRI_REPO_PASSWORD"] as String
+            }
+        }
+    }
+}
+
+allprojects {
+    publishing {
+        def project = project
+        println(project.name)
+        project.afterEvaluate {
+            if (project.ext.has("publish")) {
+                publications {
+                    it.create(project.name, MavenPublication) {
+                        it.groupId = project.group
+                        it.artifactId = project.description ?: project.name
+                        it.version = project.version
+
+                        it.from project.components['java']
+                    }
+                }
+            }
+        }
+    }
+}
