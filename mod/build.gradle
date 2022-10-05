@@ -5,11 +5,9 @@ plugins {
 }
 
 dependencies {
-    compileOnly 'ru.cristalix:client-api:live-SNAPSHOT'
-    implementation 'ru.cristalix:uiengine:1.0.2'
-    implementation 'ru.cristalix:client-sdk:live-SNAPSHOT'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
-    implementation 'implario:humanize:1.1.3'
+    compileOnly 'ru.cristalix:client-api:foranelfer-SNAPSHOT'
+    implementation 'ru.cristalix:uiengine:foranelfer-SNAPSHOT'
+    implementation 'ru.cristalix:client-sdk:foranelfer-SNAPSHOT'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -19,9 +17,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 bundle {
-    modName 'Tycoon Mod'
+    modName 'DungeonSim'
     mainClass 'ru.cristalix.tycoon.App'
-    author 'Cristalix'
+    author 'moteloff'
     // dontoptimize()
     keep('class ru.cristalix.data.** { *; }')
     keep('class ru.cristalix.** { *; }')

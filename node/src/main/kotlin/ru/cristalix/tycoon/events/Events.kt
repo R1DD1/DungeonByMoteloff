@@ -15,14 +15,8 @@ import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
 import org.spigotmc.event.entity.EntityDismountEvent
-import ru.cristalix.tycoon.events.PlayerJoinEvent
 
 class Events : Listener {
-    @EventHandler
-    fun PlayerJoinEvent.handle() {
-
-    }
-
     @EventHandler
     fun ChunkLoadEvent.handle() {
         chunk.biome = EmptyChunkBiome.INSTANCE

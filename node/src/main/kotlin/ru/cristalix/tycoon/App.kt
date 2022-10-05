@@ -2,6 +2,7 @@ package ru.cristalix.tycoon
 
 
 import clepto.bukkit.B
+import clepto.bukkit.B.plugin
 import dev.implario.bukkit.platform.Platforms
 import dev.implario.bukkit.world.Label
 import dev.implario.games5e.node.CoordinatorClient
@@ -21,64 +22,61 @@ import ru.cristalix.core.party.IPartyService
 import ru.cristalix.core.party.PartyService
 import ru.cristalix.core.realm.IRealmService
 import ru.cristalix.core.realm.RealmStatus
+import ru.cristalix.core.scoreboard.IScoreboardService
+import ru.cristalix.core.scoreboard.ScoreboardService
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
 import ru.cristalix.tycoon.events.Events
-import ru.cristalix.tycoon.events.PlayerJoinEvent
+import ru.cristalix.tycoon.events.JoinEvent
 import ru.kdev.simulatorapi.createSimulator
 import ru.kdev.simulatorapi.listener.SessionListener
+import java.util.EventListener
 import kotlin.math.sqrt
 
+const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
-const val SIMULATOR_ID = "tycoon"
 
 class App : JavaPlugin() {
 
-    private val client = CoordinatorClient(NoopGameNode())
-    val map = WorldMeta(MapLoader.load("DungeonSim", "lobby"))
-    val spawn: Label = map.getLabel("spawn").apply { yaw = -90f }
+    lateinit var map : WorldMeta
 
     override fun onEnable() {
         app = this
-
-        Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG)
-        ModLoader.onJoining("mod-bundle")
-
-        createSimulator<App, User> {
-            id = SIMULATOR_ID
-            plugin = this@App
-
-            levelFormula { ((sqrt(5.0) * sqrt((this * 80 + 5).toDouble()) + 5) / 20).toInt() }
-
-            expFormula { this * this - this / 2 }
-
-            userCreator { uuid -> User(uuid) }
-        }
-
-        CoreApi.get().apply {
-            registerService(ITransferService::class.java, TransferService(this.socketClient))
-            registerService(IPartyService::class.java, PartyService(ISocketClient.get()))
-            registerService(IInventoryService::class.java, InventoryService())
-        }
+        plugin = app
 
         Platforms.set(PlatformDarkPaper())
 
-        // Конфигурация реалма
-        IRealmService.get().currentRealmInfo.apply {
-            status = RealmStatus.WAITING_FOR_PLAYERS
-            isLobbyServer = true
-            readableName = "DungeonSimulator"
-            groupName = "moteloff"
+        CoreApi.get().run {
+            registerService(ITransferService::class.java, TransferService(socketClient))
+            registerService(IScoreboardService::class.java, ScoreboardService())
         }
 
+        B.events(JoinEvent())
         B.events(Events())
-        B.events(PlayerJoinEvent())
 
+        Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG)
+        ModLoader.onJoining("mod-bundle-1.0-SNAPSHOT.jar")
 
-        Runtime.getRuntime().addShutdownHook(Thread { SessionListener.simulator.disable() })
+//        createSimulator<App, User> {
+//            id = SIMULATOR_ID
+//            plugin = this@App
+//
+//            levelFormula { ((sqrt(5.0) * sqrt((this * 80 + 5).toDouble()) + 5) / 20).toInt() }
+//
+//            expFormula { this * this - this / 2 }
+//
+//            userCreator { uuid -> User(uuid) }
+//        }
+
+        IRealmService.get().currentRealmInfo.apply {
+            IScoreboardService.get().serverStatusBoard.displayName = "§fСимулятор подземелья§b"}.run {
+            readableName = "DungSim"
+            groupName = "DungSim "
+            status = RealmStatus.GAME_STARTED_CAN_JOIN
+            isLobbyServer = false
+        }
+
+        map = ru.cristalix.tycoon.utils.maploader.MapLoader.load("DungeonSim", "lobby")!!
     }
-
-    override fun onDisable() = SessionListener.simulator.disable()
-
-    private fun formula(number: Int): Int = (number * number - number) / 4
+    fun getSpawn(): Label = map.getLabel("spawn")
 }
