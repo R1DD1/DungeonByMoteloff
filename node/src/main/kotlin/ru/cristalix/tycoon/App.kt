@@ -1,5 +1,7 @@
 package ru.cristalix.tycoon
 
+
+import clepto.bukkit.B
 import dev.implario.bukkit.platform.Platforms
 import dev.implario.bukkit.world.Label
 import dev.implario.games5e.node.CoordinatorClient
@@ -21,6 +23,8 @@ import ru.cristalix.core.realm.IRealmService
 import ru.cristalix.core.realm.RealmStatus
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
+import ru.cristalix.tycoon.events.Events
+import ru.cristalix.tycoon.events.PlayerJoinEvent
 import ru.kdev.simulatorapi.createSimulator
 import ru.kdev.simulatorapi.listener.SessionListener
 import kotlin.math.sqrt
@@ -31,7 +35,7 @@ const val SIMULATOR_ID = "tycoon"
 class App : JavaPlugin() {
 
     private val client = CoordinatorClient(NoopGameNode())
-    val map = WorldMeta(MapLoader.load("func", "tower"))
+    val map = WorldMeta(MapLoader.load("DungeonSim", "lobby"))
     val spawn: Label = map.getLabel("spawn").apply { yaw = -90f }
 
     override fun onEnable() {
@@ -63,9 +67,13 @@ class App : JavaPlugin() {
         IRealmService.get().currentRealmInfo.apply {
             status = RealmStatus.WAITING_FOR_PLAYERS
             isLobbyServer = true
-            readableName = "Название режима"
-            groupName = "Группа режима"
+            readableName = "DungeonSimulator"
+            groupName = "moteloff"
         }
+
+        B.events(Events())
+        B.events(PlayerJoinEvent())
+
 
         Runtime.getRuntime().addShutdownHook(Thread { SessionListener.simulator.disable() })
     }
