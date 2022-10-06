@@ -36,6 +36,7 @@ import kotlin.math.sqrt
 const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
 
+
 class App : JavaPlugin() {
 
     lateinit var map : WorldMeta
