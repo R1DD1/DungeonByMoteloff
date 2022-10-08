@@ -6,6 +6,7 @@ import dev.xdark.feder.FixedChunkLight
 import me.func.mod.util.after
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.FallingBlock
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
@@ -50,15 +51,15 @@ class Events : Listener {
         if (entity is FallingBlock) isCancelled = true
     }
 
-    @EventHandler
-    fun EntityDamageEvent.handle() {
-        isCancelled = true
-    }
-
-    @EventHandler
-    fun PlayerDeathEvent.handle(){
-        isCancelled = true
-    }
+//    @EventHandler
+//    fun EntityDamageEvent.handle() {
+//        if (entity is Player )
+//    }
+//
+//    @EventHandler
+//    fun PlayerDeathEvent.handle(){
+//        isCancelled = true
+//    }
 
     @EventHandler
     fun FoodLevelChangeEvent.handle() {
