@@ -1,5 +1,7 @@
 package ru.cristalix.tycoon.events
 
+import me.func.mod.Anime
+import me.func.mod.conversation.ModTransfer
 import me.func.mod.util.after
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
@@ -30,6 +32,12 @@ class JoinEvent : Listener {
             player.equipment.boots = Armor.DEFAULT_ARMOR_B.get()
             player.equipment.helmet = Armor.DEFAULT_ARMOR_H.get()
             player.inventory.addItem(item)
+
+            player.maxHealth = 60.0
+
+        }
+        after(2){
+
         }
     }
 

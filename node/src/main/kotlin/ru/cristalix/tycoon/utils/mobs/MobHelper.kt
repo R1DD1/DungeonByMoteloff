@@ -38,6 +38,7 @@ object MobHelper {
 
         NBTEntity(spawningMob).setTag("health", mob.getHp())
         NBTEntity(spawningMob).setTag("damage", mob.getDamage())
+        NBTEntity(spawningMob).setTag("xp", mob.getXp())
 
         setMovementSpeed(spawningMob, mob.getSpeed(), 1)
         setDefaultDamage(spawningMob, 0.0, 0)
@@ -70,19 +71,22 @@ object MobHelper {
         attributes.b(modifier)
     }
 
-    fun changeHp(entity: LivingEntity, damage: Int){
+    fun changeHp(entity: LivingEntity, damage: Int, killer: Player){
         val finalDamage = damage - getProtection(entity)
         if (entity !is Player){
             entity.customName = (entity.customName.toInt() - finalDamage).toString()
             if (entity.customName.toInt() <= 0) {
-                killMob(entity.uniqueId)
+                killMob(entity.uniqueId, killer)
                 entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.5, 0.0), 5)
                 entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.0, 0.0), 5)
             }
         }
     }
 
-    fun killMob(uuid: UUID) = getEntity(uuid).remove()
+    fun killMob(uuid: UUID, killer: Player) {
+        getEntity(uuid).remove()
+        killer.exp + NBTEntity(getEntity(uuid)).getInt("xp")
+    }
 
 //    fun checkAliveMobs(world: World): Boolean {
 //        world.entities.forEach { entity ->

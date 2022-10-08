@@ -18,4 +18,5 @@ object PlayerUtil {
     fun getHp(player: Player) = player.health
 
     fun setHp(player: Player, value: Double ) { player.health = value }
+//    ModTransfer().integer(value).integer(100).send("update-healthbar", player)
 }

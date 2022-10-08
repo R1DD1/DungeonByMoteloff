@@ -10,6 +10,8 @@ import dev.implario.platform.impl.darkpaper.PlatformDarkPaper
 import me.func.mod.Anime
 import me.func.mod.Kit
 import me.func.mod.conversation.ModLoader
+import me.func.mod.conversation.ModTransfer
+import me.func.mod.util.command
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Zombie
@@ -49,8 +51,10 @@ class App : JavaPlugin() {
 
         B.events(JoinEvent(), Events(), MobListener())
 
-        Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG)
-        ModLoader.onJoining("mod-bundle-1.0-SNAPSHOT.jar")
+        Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG, Kit.DEBUG)
+        ModLoader.loadAll("mods")
+        ModLoader.onJoining("mod-bundle-1.0.jar")
+
 
 //        createSimulator<App, User> {
 //            id = SIMULATOR_ID
@@ -73,6 +77,9 @@ class App : JavaPlugin() {
 
         map = ru.cristalix.tycoon.utils.maploader.MapLoader.load("DungeonSim", "lobby")!!
 //        val mob = MobHelper.spawnMob(MobType.WEAKNESS_SKELETON, getSpawn())
+        command("trans") { sender, args ->
+            ModTransfer().string(args[1]).send(args[0], sender)
+        }
 
     }
     fun getSpawn(): Label = map.getLabel("spawn")
