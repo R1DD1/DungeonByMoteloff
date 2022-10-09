@@ -8,7 +8,7 @@ import ru.cristalix.tycoon.items.Armor
 enum class MobType(private val type: EntityType, private val hp: Int,private val damage: Int,private val equipment: List<ItemStack>,private val visibleName: String, private val xp: Int, private val speed: Double) {
     WEAKNESS_ZOMBIE(
         EntityType.ZOMBIE,
-        100,
+        1000,
         10,
         listOf(Armor.DEFAULT_ARMOR_C.get(), Armor.DEFAULT_ARMOR_L.get(), Armor.DEFAULT_ARMOR_B.get()),
         "Охраник руин",

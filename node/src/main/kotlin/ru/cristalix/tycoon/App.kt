@@ -24,9 +24,11 @@ import ru.cristalix.core.scoreboard.ScoreboardService
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
 import ru.cristalix.tycoon.events.Events
+import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
 import ru.cristalix.tycoon.utils.NBTEntity
+import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
 import ru.cristalix.tycoon.utils.mobs.MobHelper
 import ru.cristalix.tycoon.utils.mobs.MobType
 
@@ -49,7 +51,7 @@ class App : JavaPlugin() {
             registerService(IScoreboardService::class.java, ScoreboardService())
         }
 
-        B.events(JoinEvent(), Events(), MobListener())
+        B.events(JoinEvent(), Events(), MobListener(), ItemAbilities())
 
         Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG, Kit.DEBUG)
         ModLoader.loadAll("mods")
@@ -78,7 +80,10 @@ class App : JavaPlugin() {
         map = ru.cristalix.tycoon.utils.maploader.MapLoader.load("DungeonSim", "lobby")!!
 //        val mob = MobHelper.spawnMob(MobType.WEAKNESS_SKELETON, getSpawn())
         command("trans") { sender, args ->
-            ModTransfer().string(args[1]).send(args[0], sender)
+            DungeonHelper.createDungeon(sender, "S")
+        }
+        command("test") { sender, args ->
+            DungeonHelper.createDungeon(sender, "S")
         }
 
     }

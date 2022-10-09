@@ -1,5 +1,6 @@
 package ru.cristalix.tycoon.events
 
+import me.func.mod.Anime
 import me.func.mod.conversation.ModTransfer
 import org.bukkit.GameMode
 import org.bukkit.entity.LivingEntity
@@ -10,6 +11,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.player.PlayerGameModeChangeEvent
+import org.bukkit.inventory.ItemStack
+import ru.cristalix.tycoon.items.Swords
 import ru.cristalix.tycoon.utils.NBT
 import ru.cristalix.tycoon.utils.NBTEntity
 import ru.cristalix.tycoon.utils.PlayerUtil
@@ -25,7 +28,11 @@ class MobListener : Listener {
             val item = (damager as Player).inventory.itemInMainHand
             if (NBT(item).contains("damage")){
                 damage = (NBT(item).getInt("damage"))
-                MobHelper.changeHp(entity as LivingEntity, damage, damager as Player)
+                if (getChance("critical-chance", item)) {
+                    damage = NBT(item).getInt("critical-damage")
+                    Anime.cursorMessage(damager as Player, "§4КРИТ!")
+                }
+                MobHelper.changeHp(entity as LivingEntity, damage, 0, damager as Player)
             }
         }
        if (damager !is Player && damager is LivingEntity){
@@ -37,7 +44,6 @@ class MobListener : Listener {
                    player.gameMode = GameMode.SPECTATOR
                    PlayerUtil.setHp(player, PlayerUtil.getMaxHp(player))
                } else player.health = player.health - finalDamage
-
            }
        }
 
@@ -50,5 +56,12 @@ class MobListener : Listener {
     fun PlayerGameModeChangeEvent.handle() {
         if (newGameMode == GameMode.SPECTATOR) { ModTransfer().boolean(false).send("enable-bars", player) }
         if (newGameMode == GameMode.SURVIVAL) { ModTransfer().boolean(true).send("enable-bars", player) }
+    }
+
+    fun getChance(NBTTag: String, item: ItemStack): Boolean {
+        val chance = NBT(item).getInt(NBTTag)
+        val randomInt = (0..10).random()
+        if (chance >= randomInt) { return true }
+        return false
     }
 }

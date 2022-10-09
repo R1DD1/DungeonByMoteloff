@@ -32,7 +32,6 @@ class BarManager {
             val healthLevel = clientApi.minecraft().player.health.toInt()
             val maxHealth = clientApi.minecraft().player.maxHealth.toInt()
 
-
             health = healthLevel
             healthIndicator?.updatePercentage(healthLevel, maxHealth)
 

@@ -26,17 +26,17 @@ class JoinEvent : Listener {
             MobHelper.spawnMob(MobType.WEAKNESS_ZOMBIE, app.getSpawn())
             player.inventory.clear()
 
-            val item = Swords.DEFAULT_SWORD.get()
+
             player.equipment.chestplate = Armor.DEFAULT_ARMOR_C.get()
             player.equipment.leggings = Armor.DEFAULT_ARMOR_L.get()
             player.equipment.boots = Armor.DEFAULT_ARMOR_B.get()
             player.equipment.helmet = Armor.DEFAULT_ARMOR_H.get()
-            player.inventory.addItem(item)
 
-            player.maxHealth = 60.0
+            Swords.values().forEach { item ->
+                player.inventory.addItem(item.get())
+            }
 
-        }
-        after(2){
+            player.maxHealth = 300.0
 
         }
     }

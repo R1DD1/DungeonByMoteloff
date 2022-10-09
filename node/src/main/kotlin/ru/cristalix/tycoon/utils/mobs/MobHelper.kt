@@ -71,14 +71,18 @@ object MobHelper {
         attributes.b(modifier)
     }
 
-    fun changeHp(entity: LivingEntity, damage: Int, killer: Player){
-        val finalDamage = damage - getProtection(entity)
-        if (entity !is Player){
-            entity.customName = (entity.customName.toInt() - finalDamage).toString()
-            if (entity.customName.toInt() <= 0) {
-                killMob(entity.uniqueId, killer)
-                entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.5, 0.0), 5)
-                entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.0, 0.0), 5)
+    fun changeHp(entity: LivingEntity, damage: Int, clearDamage: Int, killer: Player){
+        if (!(entity.isDead)) {
+            var finalDamage = damage - getProtection(entity)
+            if (finalDamage < 0)  finalDamage = 0
+            if (entity !is Player){
+                entity.customName = (entity.customName.toInt() - finalDamage).toString()
+                entity.customName = (entity.customName.toInt() - clearDamage).toString()
+                if (entity.customName.toInt() <= 0) {
+                    killMob(entity.uniqueId, killer)
+                    entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.5, 0.0), 5)
+                    entity.world.spawnParticle(Particle.REDSTONE, entity.location.add(0.0, 1.0, 0.0), 5)
+                }
             }
         }
     }
