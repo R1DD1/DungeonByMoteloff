@@ -3,6 +3,7 @@ package ru.cristalix.tycoon.events
 import me.func.mod.Anime
 import me.func.mod.conversation.ModTransfer
 import org.bukkit.GameMode
+import org.bukkit.Particle
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -31,6 +32,7 @@ class MobListener : Listener {
                 if (getChance("critical-chance", item)) {
                     damage = NBT(item).getInt("critical-damage")
                     Anime.cursorMessage(damager as Player, "§4КРИТ!")
+                    entity.world.spawnParticle(Particle.CRIT, entity.location, 3)
                 }
                 MobHelper.changeHp(entity as LivingEntity, damage, 0, damager as Player)
             }

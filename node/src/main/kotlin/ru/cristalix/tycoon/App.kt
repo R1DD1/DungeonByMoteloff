@@ -10,11 +10,7 @@ import dev.implario.platform.impl.darkpaper.PlatformDarkPaper
 import me.func.mod.Anime
 import me.func.mod.Kit
 import me.func.mod.conversation.ModLoader
-import me.func.mod.conversation.ModTransfer
-import me.func.mod.util.command
-import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Zombie
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import ru.cristalix.core.CoreApi
 import ru.cristalix.core.realm.IRealmService
@@ -23,14 +19,13 @@ import ru.cristalix.core.scoreboard.IScoreboardService
 import ru.cristalix.core.scoreboard.ScoreboardService
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
+import ru.cristalix.tycoon.Classes.Healer
+import ru.cristalix.tycoon.Classes.Swordman
+import ru.cristalix.tycoon.Classes.Tank
 import ru.cristalix.tycoon.events.Events
 import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
-import ru.cristalix.tycoon.utils.NBTEntity
-import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
-import ru.cristalix.tycoon.utils.mobs.MobHelper
-import ru.cristalix.tycoon.utils.mobs.MobType
 
 const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
@@ -39,6 +34,7 @@ lateinit var app: App
 class App : JavaPlugin() {
 
     lateinit var map : WorldMeta
+    val playerToClass = mutableMapOf<Player, String>()
 
     override fun onEnable() {
         app = this
@@ -79,11 +75,23 @@ class App : JavaPlugin() {
 
         map = ru.cristalix.tycoon.utils.maploader.MapLoader.load("DungeonSim", "lobby")!!
 //        val mob = MobHelper.spawnMob(MobType.WEAKNESS_SKELETON, getSpawn())
-        command("trans") { sender, args ->
-            DungeonHelper.createDungeon(sender, "S")
-        }
-        command("test") { sender, args ->
-            DungeonHelper.createDungeon(sender, "S")
+//        command("trans") { sender, args ->
+//            DungeonHelper.createDungeon(sender, "S")
+//        }
+//        command("test") { sender, args ->
+//            DungeonHelper.createDungeon(sender, "S")
+//        }
+
+
+
+        Anime.createReader("key_f") { player, _ ->
+            val keyName = playerToClass[player]
+            when(keyName) {
+                Swordman.keyName -> Swordman.unicAbility(player)
+                Tank.keyName -> Tank.unicAbility(player)
+                Healer.keyName -> Healer.unicAbility(player)
+            }
+
         }
 
     }

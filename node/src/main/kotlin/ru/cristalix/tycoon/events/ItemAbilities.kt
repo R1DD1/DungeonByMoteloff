@@ -38,7 +38,6 @@ class ItemAbilities : Listener{
                                 multiplier++
                                 times--
                             }
-
                         }
                     }
                     "knock" -> {

@@ -1,4 +1,5 @@
 import ru.cristalix.clientapi.KotlinMod
+import ru.cristalix.tycoon.KeyLogger
 import ru.cristalix.uiengine.UIEngine
 
 
@@ -11,5 +12,6 @@ class App : KotlinMod() {
         UIEngine.initialize(this)
 
         BarManager()
+        KeyLogger()
     }
 }
