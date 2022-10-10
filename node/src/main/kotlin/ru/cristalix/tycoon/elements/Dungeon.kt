@@ -1,5 +1,6 @@
 package ru.cristalix.tycoon.elements
 
+import me.func.mod.selection.Button
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import ru.cristalix.tycoon.utils.dungeon.DungeonType
@@ -12,7 +13,7 @@ class Dungeon(
     var location: Location,
     var players: MutableList<Player>,
     var gameIsOn: Boolean,
-    var map: DungeonType
+    var map: DungeonType,
 ){
     fun playerJoin(player: Player) { players.add(player) }
 

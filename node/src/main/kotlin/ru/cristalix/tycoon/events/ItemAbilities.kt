@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.Vector
 import ru.cristalix.tycoon.items.Swords
+import ru.cristalix.tycoon.utils.ItemHelper
 import ru.cristalix.tycoon.utils.NBT
 import ru.cristalix.tycoon.utils.mobs.MobHelper
 
@@ -26,7 +27,7 @@ class ItemAbilities : Listener{
             if (NBT(item).contains("abilities")) {
                 when(NBT(item).getString("abilities")) {
                     "ignite" -> {
-                        if (Swords.IGNITE_SWORD.getChance("abilities-chance")) {
+                        if (ItemHelper.getChance("abilities-chance", item)) {
                             entity.fireTicks = 80
 
                             var times = 4
@@ -41,13 +42,13 @@ class ItemAbilities : Listener{
                         }
                     }
                     "knock" -> {
-                        if (Swords.KNOCK_SWORD.getChance("abilities-chance")) {
+                        if (ItemHelper.getChance("abilities-chance", item)) {
                             (entity as LivingEntity).velocity = Vector(entity.velocity.x, 5.0, entity.velocity.z).normalize()
                             after(40) { MobHelper.changeHp(entity as LivingEntity, 0, 10, player) }
                         }
                     }
                     "lightning" -> {
-                        if (Swords.LIGHTNING_SWORD.getChance("abilities-chance")) {
+                        if (ItemHelper.getChance("abilities-chance", item)) {
                             player.world.strikeLightningEffect(entity.location)
                             after(20) { MobHelper.changeHp(entity as LivingEntity, 0, 15, player) }
                         }

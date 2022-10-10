@@ -7,27 +7,42 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import ru.cristalix.tycoon.app
 import ru.cristalix.tycoon.elements.Dungeon
+import ru.cristalix.tycoon.utils.selections.DungeonSelection
 import java.util.UUID
 
 object DungeonHelper {
+    val selection = DungeonSelection.selection
 
-    private var dungeons: MutableMap<UUID, Dungeon>? = null
-    val unactiveDungeons: MutableList<Dungeon>? = null
-
-    fun getDungeon(uuid: UUID): Dungeon? { return dungeons?.get(uuid) }
+    val dungeonToButton = mutableMapOf<Dungeon, Button>()
+    private var dungeons = mutableMapOf<UUID, Dungeon>()
+    fun getDungeon(uuid: UUID): Dungeon? { return dungeons[uuid]
+    }
 
     fun createDungeon(player: Player, rank: String): Dungeon{
         val dungeon = Dungeon(UUID.randomUUID(), player, rank, app.getSpawn().clone(),
             mutableListOf(player), false, DungeonType.values().random() )
 
-        player.world.getBlockAt(100, 100, 100).type = Material.BEDROCK
-//        if (dungeons == null) { dungeons = mutableMapOf(dungeon.uuid to dungeon) } else dungeons?.set(dungeon.uuid to dungeon)
+        val desc = " "
+        dungeon.players.forEach {
+            desc + it.playerListName
+            player.sendMessage(it.playerListName)
+        }
+
+        player.sendMessage(desc)
+
+        createButton(dungeon, desc)
+        selection.open(player)
         return dungeon
     }
 
-    fun findEmptyDungeons() {
-        dungeons?.values?.forEach { dungeon ->
-            if (!(dungeon.gameIsOn)) { unactiveDungeons!!.add(dungeon) }
+    private fun createButton(dungeon: Dungeon, desc: String) {
+        val button = button {
+            title = "Подземелье ${dungeon.rank} ранга"
+            description = desc
+
+            onClick { player, _, _ -> player.teleport(dungeon.location) }
         }
+        selection.add(button)
     }
+
 }

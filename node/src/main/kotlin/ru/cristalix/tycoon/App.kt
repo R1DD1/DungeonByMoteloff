@@ -10,6 +10,9 @@ import dev.implario.platform.impl.darkpaper.PlatformDarkPaper
 import me.func.mod.Anime
 import me.func.mod.Kit
 import me.func.mod.conversation.ModLoader
+import me.func.mod.conversation.ModTransfer
+import me.func.mod.util.after
+import me.func.mod.util.command
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import ru.cristalix.core.CoreApi
@@ -26,6 +29,7 @@ import ru.cristalix.tycoon.events.Events
 import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
+import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
 
 const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
@@ -78,20 +82,30 @@ class App : JavaPlugin() {
 //        command("trans") { sender, args ->
 //            DungeonHelper.createDungeon(sender, "S")
 //        }
-//        command("test") { sender, args ->
-//            DungeonHelper.createDungeon(sender, "S")
-//        }
+        command("test") { sender, args ->
+            DungeonHelper.createDungeon(sender, "S")
+        }
 
-
+        val reload = mutableMapOf<Player, Boolean>()
 
         Anime.createReader("key_f") { player, _ ->
-            val keyName = playerToClass[player]
-            when(keyName) {
-                Swordman.keyName -> Swordman.unicAbility(player)
-                Tank.keyName -> Tank.unicAbility(player)
-                Healer.keyName -> Healer.unicAbility(player)
+            ModTransfer().send("reload-start", player)
+            after(19 * 20) {
+                reload[player] = false
+                ModTransfer().send("reload-end", player)
+
             }
 
+            if (!(reload.containsKey(player))) { reload.set(player, false) }
+            if (reload[player] == false) {
+                val keyName = playerToClass[player]
+                when(keyName) {
+                    Swordman.keyName -> Swordman.unicAbility(player)
+                    Tank.keyName -> Tank.unicAbility(player)
+                    Healer.keyName -> Healer.unicAbility(player)
+                }
+                reload[player] = true
+            } else { player.sendMessage("Перезарядка") }
         }
 
     }

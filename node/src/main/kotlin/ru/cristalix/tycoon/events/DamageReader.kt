@@ -13,10 +13,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.inventory.ItemStack
-import ru.cristalix.tycoon.items.Swords
+import ru.cristalix.tycoon.utils.ItemHelper
 import ru.cristalix.tycoon.utils.NBT
 import ru.cristalix.tycoon.utils.NBTEntity
-import ru.cristalix.tycoon.utils.PlayerUtil
+import ru.cristalix.tycoon.utils.PlayerHelper
 import ru.cristalix.tycoon.utils.mobs.MobHelper
 
 class MobListener : Listener {
@@ -29,7 +29,7 @@ class MobListener : Listener {
             val item = (damager as Player).inventory.itemInMainHand
             if (NBT(item).contains("damage")){
                 damage = (NBT(item).getInt("damage"))
-                if (getChance("critical-chance", item)) {
+                if (ItemHelper.getChance("critical-chance", item)) {
                     damage = NBT(item).getInt("critical-damage")
                     Anime.cursorMessage(damager as Player, "§4КРИТ!")
                     entity.world.spawnParticle(Particle.CRIT, entity.location, 3)
@@ -41,10 +41,10 @@ class MobListener : Listener {
            if (entity is Player){
                val player = entity as Player
                damage = NBTEntity(damager).getInt("damage")
-               val finalDamage = damage - PlayerUtil.getProtection(player)
-               if (finalDamage >= PlayerUtil.getHp(player)) {
+               val finalDamage = damage - PlayerHelper.getProtection(player)
+               if (finalDamage >= PlayerHelper.getHp(player)) {
                    player.gameMode = GameMode.SPECTATOR
-                   PlayerUtil.setHp(player, PlayerUtil.getMaxHp(player))
+                   PlayerHelper.setHp(player, PlayerHelper.getMaxHp(player))
                } else player.health = player.health - finalDamage
            }
        }
@@ -58,12 +58,5 @@ class MobListener : Listener {
     fun PlayerGameModeChangeEvent.handle() {
         if (newGameMode == GameMode.SPECTATOR) { ModTransfer().boolean(false).send("enable-bars", player) }
         if (newGameMode == GameMode.SURVIVAL) { ModTransfer().boolean(true).send("enable-bars", player) }
-    }
-
-    fun getChance(NBTTag: String, item: ItemStack): Boolean {
-        val chance = NBT(item).getInt(NBTTag)
-        val randomInt = (0..10).random()
-        if (chance >= randomInt) { return true }
-        return false
     }
 }

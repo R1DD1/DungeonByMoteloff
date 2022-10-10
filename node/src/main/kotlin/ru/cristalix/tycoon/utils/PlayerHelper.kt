@@ -1,9 +1,8 @@
 package ru.cristalix.tycoon.utils
 
-import net.minecraft.server.v1_12_R1.ItemStack
 import org.bukkit.entity.Player
 
-object PlayerUtil {
+object PlayerHelper {
 
     fun getProtection(player: Player): Int{
         var protection = 0

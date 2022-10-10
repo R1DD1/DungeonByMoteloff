@@ -21,52 +21,14 @@ import ru.cristalix.tycoon.utils.NBT
 import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
 import ru.cristalix.tycoon.utils.mobs.MobHelper
 import ru.cristalix.tycoon.utils.mobs.MobType
+import ru.cristalix.tycoon.utils.selections.ClassChoicer
 
 
 class JoinEvent : Listener {
-
-
+    val choicer = ClassChoicer.choicer
 
     @EventHandler
     fun PlayerJoinEvent.handle(){
-
-        val choicer = selection {
-            title = "Выбор класса"
-
-            buttons(
-                button{
-                    title = Swordman.title
-                    description = Swordman.desc
-                    hint = "Выбрать"
-                    texture = "minecraft:textures/items/iron_sword.png"
-                    onClick { player, _, _ ->
-                        app.playerToClass[player] = Swordman.keyName
-                        Anime.close(player)
-                    }
-                },
-                button{
-                    title = Tank.title
-                    description = Tank.desc
-                    hint = "Выбрать"
-                    texture = "minecraft:textures/items/shield.png"
-                    onClick { player, _, _ ->
-                        app.playerToClass[player] = Tank.keyName
-                        Anime.close(player)
-                    }
-                },
-                button{
-                    title = Healer.title
-                    description = Healer.desc
-                    hint = "Выбрать"
-                    texture = "minecraft:textures/items/emerald.png"
-                    onClick { player, _, _ ->
-                        app.playerToClass[player] = Healer.keyName
-                        Anime.close(player)
-                    }
-                }
-            )
-        }
-
         player.teleport(app.getSpawn())
         after(20){
             MobHelper.spawnMob(MobType.WEAKNESS_ZOMBIE, app.getSpawn())
@@ -78,11 +40,11 @@ class JoinEvent : Listener {
             player.equipment.boots = Armor.DEFAULT_ARMOR_B.get()
             player.equipment.helmet = Armor.DEFAULT_ARMOR_H.get()
 
+            choicer.open(player)
+
             Swords.values().forEach { item ->
                 player.inventory.addItem(item.get())
             }
-
-            choicer.open(player)
 
             player.maxHealth = 300.0
 

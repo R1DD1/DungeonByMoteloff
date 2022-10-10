@@ -34,10 +34,10 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
-                    "critical-chance" to 1,
+                    "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "ignite",
-                    "abilities-chance" to 4
+                    "abilities-chance" to 5
                 )
             )
             nbt("Unbreakable", 1)
@@ -52,10 +52,10 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
-                    "critical-chance" to 1,
+                    "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "knock",
-                    "abilities-chance" to 3
+                    "abilities-chance" to 5
                 )
             )
             nbt("Unbreakable", 1)
@@ -70,7 +70,7 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
-                    "critical-chance" to 1,
+                    "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "tp",
                     "abilities-chance" to 999
@@ -88,10 +88,10 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
-                    "critical-chance" to 1,
+                    "critical-chance" to 10,
                     "critical-damage" to 25,
                     "abilities" to "lightning",
-                    "abilities-chance" to 1
+                    "abilities-chance" to 5
                 )
             )
             nbt("Unbreakable", 1)
@@ -106,13 +106,4 @@ enum class Swords(private var itemStack: ItemStack) {
     ),;
 
     fun get(): ItemStack{ return itemStack.clone() }
-    fun addToInv(player: Player){ player.inventory.addItem(itemStack.clone()) }
-
-    fun getChance(NBTTag: String): Boolean {
-        val chance = NBT(itemStack).getInt(NBTTag)
-        if (chance == 999) { return true }
-        val randomInt = (0..10).random()
-        if (chance >= randomInt) { return true }
-        return false
-    }
 }

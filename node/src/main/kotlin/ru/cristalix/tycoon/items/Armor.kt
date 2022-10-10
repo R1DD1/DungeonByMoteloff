@@ -66,5 +66,4 @@ enum class Armor(private val itemStack: ItemStack) {
         }.build()
     );
     fun get(): ItemStack{ return itemStack }
-    fun addToInv(player: Player){ player.inventory.addItem(itemStack.clone()) }
 }
