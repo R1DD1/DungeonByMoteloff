@@ -3,13 +3,14 @@ package ru.cristalix.tycoon.utils.selections
 import me.func.mod.Anime
 import me.func.mod.selection.button
 import me.func.mod.selection.choicer
+import me.func.mod.selection.selection
 import ru.cristalix.tycoon.Classes.Healer
 import ru.cristalix.tycoon.Classes.Swordman
 import ru.cristalix.tycoon.Classes.Tank
 import ru.cristalix.tycoon.app
 
 object ClassChoicer {
-    val choicer = choicer {
+    val choicer = selection {
         title = "Выбор класса"
 
         buttons(
@@ -27,7 +28,7 @@ object ClassChoicer {
                 title = Tank.title
                 description = Tank.desc
                 hint = "Выбрать"
-                texture = "minecraft:textures/items/shield.png"
+                texture = "minecraft:textures/items/totem.png"
                 onClick { player, _, _ ->
                     app.playerToClass[player] = Tank.keyName
                     Anime.close(player)

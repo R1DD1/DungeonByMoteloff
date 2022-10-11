@@ -14,6 +14,7 @@ class Dungeon(
     var players: MutableList<Player>,
     var gameIsOn: Boolean,
     var map: DungeonType,
+    var buttonIndex: Int
 ){
     fun playerJoin(player: Player) { players.add(player) }
 

@@ -29,7 +29,11 @@ import ru.cristalix.tycoon.events.Events
 import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
+import ru.cristalix.tycoon.npc.LobbyNpc
 import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
+import ru.cristalix.tycoon.utils.maploader.MapLoader
+import ru.cristalix.tycoon.utils.selections.DungeonSelection
+import java.util.UUID
 
 const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
@@ -37,7 +41,8 @@ lateinit var app: App
 
 class App : JavaPlugin() {
 
-    lateinit var map : WorldMeta
+    lateinit var lobby : WorldMeta
+    lateinit var maps : WorldMeta
     val playerToClass = mutableMapOf<Player, String>()
 
     override fun onEnable() {
@@ -77,16 +82,31 @@ class App : JavaPlugin() {
             isLobbyServer = false
         }
 
-        map = ru.cristalix.tycoon.utils.maploader.MapLoader.load("DungeonSim", "lobby")!!
-//        val mob = MobHelper.spawnMob(MobType.WEAKNESS_SKELETON, getSpawn())
-//        command("trans") { sender, args ->
-//            DungeonHelper.createDungeon(sender, "S")
-//        }
-        command("test") { sender, args ->
+        lobby = MapLoader.load("DungeonSim", "lobby")!!
+        maps = MapLoader.load("DungeonSim", "dungs")!!
+
+        LobbyNpc
+
+        command("dungeons") { sender, _ -> DungeonSelection.selection.open(sender) }
+        command("create_dungeon") { sender, _ ->
             DungeonHelper.createDungeon(sender, "S")
+            ModTransfer().boolean(true).send("show-preparing", sender)
+            ModTransfer().string(sender.playerListName).send("user-connected", sender)
+            ModTransfer().boolean(true).send("show-start-btn", sender)
         }
 
+        command("bars") { sender, _ -> ModTransfer().boolean(true).send("enable-bars", sender) }
+        command("ability") { sender, _ -> ModTransfer().boolean(true).send("enable-abilities", sender) }
+
         val reload = mutableMapOf<Player, Boolean>()
+
+        Anime.createReader("btn:leave") { player, _ ->
+            player.sendMessage("Пака")
+        }
+
+        Anime.createReader("btn:start") { player, _ ->
+            player.sendMessage("Запускаю")
+        }
 
         Anime.createReader("key_f") { player, _ ->
             ModTransfer().send("reload-start", player)
@@ -109,5 +129,7 @@ class App : JavaPlugin() {
         }
 
     }
-    fun getSpawn(): Label = map.getLabel("spawn")
+    fun getSpawn(): Label = lobby.getLabel("spawn")
+
+
 }

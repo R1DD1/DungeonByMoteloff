@@ -11,4 +11,8 @@ object DungeonSelection {
         hint = "Подключится"
         buttons()
     }
+
+//    fun addUserToDung(index: Int) {
+//
+//    }
 }

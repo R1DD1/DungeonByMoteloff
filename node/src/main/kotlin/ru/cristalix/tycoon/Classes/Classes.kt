@@ -39,8 +39,7 @@ object Swordman  {
         while (times > 0) {
             after((20 * multiplier).toLong()) {
                 player.getNearbyEntities(5.0, 5.0, 5.0).forEach { entity ->
-                    MobHelper.changeHp(entity as LivingEntity, 0, 5, player)
-                    entity.damage(1.0)
+                    (entity as LivingEntity).damage(5.0)
                     player.world.spawnParticle(Particle.REDSTONE, entity.location.clone().add(0.0, 1.0, 0.0), 5)
                     player.world.spawnParticle(Particle.REDSTONE, entity.location.clone().add(0.0, 2.0, 0.0), 5)
                     player.world.spawnParticle(Particle.REDSTONE, entity.location.clone().add(0.0, 0.0, 0.0), 5)
@@ -76,7 +75,7 @@ object Tank {
             val entities = player.location.getNearbyEntities(3.0, 3.0, 3.0).filter { entity ->  (entity !is Player)}
             val damage = totalDamage/entities.size
             entities.forEach{ entity ->
-                MobHelper.changeHp(entity as LivingEntity, 0, damage, player)
+                (entity as LivingEntity).damage(damage.toDouble())
             }
         }
 
