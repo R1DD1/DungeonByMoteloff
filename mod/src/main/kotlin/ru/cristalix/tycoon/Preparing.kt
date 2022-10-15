@@ -8,65 +8,12 @@ import ru.cristalix.uiengine.element.CarvedRectangle
 import ru.cristalix.uiengine.element.RectangleElement
 import ru.cristalix.uiengine.element.TextElement
 import ru.cristalix.uiengine.utility.*
+import java.util.UUID
 
 class Preparing {
     var curY: Int = -55
-    var preparingMenu: PreparingMenu = PreparingMenu()
-
-//    private val firstPlayer = text {
-//        content = "имя1"
-//        color = WHITE
-//        align = CENTER
-//        origin = LEFT
-//        shadow = true
-//        offset.y += -40.0
-//        offset.x += -40
-//        scale = V3(1.2, 1.2)
-//    }
-//
-//    private val secondPlayer = text {
-//        content = "имя2"
-//        color = WHITE
-//        align = CENTER
-//        origin = LEFT
-//        shadow = true
-//        offset.y += -15.0
-//        offset.x += -40
-//        scale = V3(1.2, 1.2)
-//    }
-//
-//    private val thirdPlayer = text {
-//        content = "имя3"
-//        color = WHITE
-//        align = CENTER
-//        origin = LEFT
-//        shadow = true
-//        offset.x += -40
-//        offset.y += 10.0
-//        scale = V3(1.2, 1.2)
-//    }
-//
-//    private val fourthPlayer = text {
-//        content = "имя4"
-//        color = WHITE
-//        align = CENTER
-//        origin = LEFT
-//        shadow = true
-//        offset.x += -40
-//        offset.y += 35.0
-//        scale = V3(1.2, 1.2)
-//    }
-//
-//    private val fifthPlayer = text {
-//        content = "имя5"
-//        color = WHITE
-//        align = CENTER
-//        origin = LEFT
-//        shadow = true
-//        offset.x += -40
-//        offset.y += 60.0
-//        scale = V3(1.2, 1.2)
-//    }
+//    val preparingMenu: PreparingMenu = PreparingMenu()
+    val preparings = mutableListOf<PreparingMenu>()
 
     private val leaveButton = carved {
         align = BOTTOM
@@ -79,8 +26,6 @@ class Preparing {
         onLeftClick {
             UIEngine.clientApi.clientConnection().sendPayload("btn:leave", Unpooled.EMPTY_BUFFER)
         }
-
-
     }
     private val leaveButtonText = text {
         content = "Покинуть"
@@ -131,58 +76,103 @@ class Preparing {
         scale = V3(0.8, 0.8)
     }
 
-
-
     init {
-        mod.registerChannel("show-preparing") {
-            val status = readBoolean()
-            preparingMenu.enabled = status
+//        mod.registerChannel("show-preparing") {
+//            val status = readBoolean()
+//            val uuid = dev.xdark.feder.NetUtil.readUtf8(this)
+//            getPreparingByUUID(UUID.fromString(uuid))!!.enabled = status
+//            display(getPreparingByUUID(UUID.fromString(uuid))!!)
+//        }
+
+//        mod.registerChannel("show-start-btn") {
+//            val status = readBoolean()
+//            val uuid = dev.xdark.feder.NetUtil.readUtf8(this)
+//            startButton.enabled = status
+//        }
+        mod.registerChannel("user-leave") {
+            val name = dev.xdark.feder.NetUtil.readUtf8(this)
+            val id = readInt()
+            getPreparingById(id).players.remove(name)
+            UIEngine.overlayContext.removeChild(getPreparingById(id))
+            addUser(getPreparingById(id).players).forEach { element ->
+                getPreparingById(id).addChild(element)
+            }
         }
-//
-        mod.registerChannel("show-start-btn") {
+
+        mod.registerChannel("hide-preparing") {
             val status = readBoolean()
-            startButton.enabled = status
+            val id = readInt()
+            getPreparingById(id)
+            getPreparingById(id).enabled = status
         }
-//
+
         mod.registerChannel("user-connected") {
             val name = dev.xdark.feder.NetUtil.readUtf8(this)
-            preparingMenu.addChild(addUser(name!!))
+            val id = readInt()
+            getPreparingById(id).players.add(name)
+            addUser(getPreparingById(id).players).forEach { element ->
+                getPreparingById(id).addChild(element)
+            }
+//            display(getPreparingById(id))
         }
 
-        display()
+        mod.registerChannel("show-preparing") {
+            val id = readInt()
+            startButton.enabled = false
+            UIEngine.overlayContext + getPreparingById(id)
+        }
+
+        mod.registerChannel("create-preparing") {
+            val id = readInt()
+            val preparing = PreparingMenu(id, )
+            preparings.add(preparing)
+            preparing.enabled = true
+            startButton.enabled = true
+            display(preparing)
+        }
 
     }
 
-    private fun display() {
-
-        val parent = rectangle {
-            origin = Relative.CENTER
-            align = Relative.LEFT
-            offset.x += -5
+    private fun getPreparingById(id: Int): PreparingMenu {
+        preparings.forEach { preparingMenu ->
+            if (preparingMenu.id == id) { return preparingMenu }
         }
+        return preparings.first()
+    }
 
+    private fun display(preparingMenu: PreparingMenu) {
         startButton.addChild(startButtonText)
         leaveButton.addChild(leaveButtonText)
         preparingMenu.addChild(title, users, leaveButton, startButton)
-        parent.addChild(preparingMenu)
-        UIEngine.overlayContext.addChild(parent)
+
+        UIEngine.overlayContext + preparingMenu
     }
 
-    private fun addUser(name: String): TextElement {
-        val text = text {
-            content = name
-            offset = V3(30.0, 0.0)
-            offset.y += curY
-            align = Relative.LEFT
-            origin = Relative.TOP_LEFT
-            scale = V3(1.0, 1.0)
+    private fun addUser(players: List<String>): MutableList<TextElement> {
+
+        val cords = listOf(-55, -40, -25, -10, 5)
+        val textElements = mutableListOf<TextElement>()
+        players.indices.forEach {
+            val text = text {
+                content = players[it]
+                offset = V3(30.0, 0.0)
+                offset.y += cords[it]
+                align = Relative.LEFT
+                origin = Relative.TOP_LEFT
+                scale = V3(1.0, 1.0)
+            }
+            textElements.add(text)
         }
+
         curY += 15
-        return text
+        return textElements
     }
 }
 
-class PreparingMenu : CarvedRectangle() {
+class PreparingMenu(
+    var id: Int = 0,
+    var players: MutableList<String> = mutableListOf()
+) : CarvedRectangle() {
     init {
         color.alpha = 1.0
         align = LEFT

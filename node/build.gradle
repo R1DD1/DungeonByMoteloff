@@ -22,6 +22,9 @@ dependencies {
     implementation 'ru.kdev:simulator-commons:live'
     implementation 'me.func:animation-api:live-SNAPSHOT'
     implementation 'ru.cristalix:boards-bukkit-api:3.0.15'
+
+    implementation 'me.func:metaworld-api:1.0.1'
+    implementation 'me.func:world-api:1.0.6'
 }
 
 afterEvaluate {

@@ -1,26 +1,12 @@
 package ru.cristalix.tycoon.events
 
-import me.func.mod.Anime
-import me.func.mod.conversation.ModTransfer
-import me.func.mod.selection.button
-import me.func.mod.selection.choicer
-import me.func.mod.selection.selection
 import me.func.mod.util.after
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import ru.cristalix.tycoon.Classes.Healer
-import ru.cristalix.tycoon.Classes.Swordman
-import ru.cristalix.tycoon.Classes.Tank
 import ru.cristalix.tycoon.app
 import ru.cristalix.tycoon.items.Armor
 import ru.cristalix.tycoon.items.Swords
-import ru.cristalix.tycoon.utils.NBT
-import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
-import ru.cristalix.tycoon.utils.mobs.MobHelper
-import ru.cristalix.tycoon.utils.mobs.MobType
 import ru.cristalix.tycoon.utils.selections.ClassChoicer
 
 
@@ -31,14 +17,13 @@ class JoinEvent : Listener {
     fun PlayerJoinEvent.handle(){
         player.teleport(app.getSpawn())
         after(20){
-            MobHelper.spawnMob(MobType.WEAKNESS_ZOMBIE, app.getSpawn())
             player.inventory.clear()
 
 
             player.equipment.chestplate = Armor.DEFAULT_ARMOR_C.get()
             player.equipment.leggings = Armor.DEFAULT_ARMOR_L.get()
             player.equipment.boots = Armor.DEFAULT_ARMOR_B.get()
-            player.equipment.helmet = Armor.DEFAULT_ARMOR_H.get()
+//            player.equipment.helmet = Armor.DEFAULT_ARMOR_H.get()
 
             choicer.open(player)
 
@@ -47,6 +32,8 @@ class JoinEvent : Listener {
             }
 
             player.maxHealth = 300.0
+
+
 
         }
     }

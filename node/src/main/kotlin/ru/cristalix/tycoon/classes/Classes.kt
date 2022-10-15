@@ -1,15 +1,10 @@
-package ru.cristalix.tycoon.Classes
+package ru.cristalix.tycoon.classes
 
-import clepto.bukkit.event.EventContext
 import me.func.mod.util.after
 import org.bukkit.Location
 import org.bukkit.Particle
-import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.event.entity.EntityDamageByEntityEvent
-import ru.cristalix.tycoon.utils.mobs.MobHelper
-import java.util.Objects
 
 //open class Classes (
 //        ) {

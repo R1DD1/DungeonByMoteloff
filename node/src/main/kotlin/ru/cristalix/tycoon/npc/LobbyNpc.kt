@@ -6,6 +6,7 @@ import me.func.mod.Npc.location
 import me.func.mod.Npc.onClick
 import me.func.mod.Npc.spawn
 import me.func.mod.conversation.ModTransfer
+import me.func.mod.data.NpcSmart
 import me.func.protocol.dialog.*
 import me.func.protocol.npc.NpcBehaviour
 import ru.cristalix.tycoon.app
@@ -14,9 +15,10 @@ object LobbyNpc {
 
     init {
         val explorer = Npc.npc {
+
             yaw = 115f
             behaviour = NpcBehaviour.STARE_AT_PLAYER
-            location(app.lobby.getLabel("explorerNpc"))
+            location(app.lobby.label("explorerNpc", 0.5, 0.0, 0.5)!!)
 
             name = "Проводник"
 
@@ -30,8 +32,6 @@ object LobbyNpc {
             }
         }
     }
-
-
 
     private val explorerDialog = Dialog (
         Entrypoint(

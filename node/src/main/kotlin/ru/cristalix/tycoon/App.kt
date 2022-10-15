@@ -4,16 +4,20 @@ package ru.cristalix.tycoon
 import clepto.bukkit.B
 import clepto.bukkit.B.plugin
 import dev.implario.bukkit.platform.Platforms
-import dev.implario.bukkit.world.Label
-import dev.implario.games5e.sdk.cristalix.WorldMeta
 import dev.implario.platform.impl.darkpaper.PlatformDarkPaper
+import me.func.MetaWorld
+import me.func.builder.MetaSubscriber
 import me.func.mod.Anime
 import me.func.mod.Kit
 import me.func.mod.conversation.ModLoader
-import me.func.mod.conversation.ModTransfer
-import me.func.mod.util.after
-import me.func.mod.util.command
-import org.bukkit.entity.Player
+import me.func.unit.Building
+import me.func.world.MapLoader
+import me.func.world.WorldMeta
+import net.minecraft.server.v1_12_R1.Block
+import net.minecraft.server.v1_12_R1.BlockPosition
+import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange
+import org.bukkit.Location
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
 import org.bukkit.plugin.java.JavaPlugin
 import ru.cristalix.core.CoreApi
 import ru.cristalix.core.realm.IRealmService
@@ -22,18 +26,12 @@ import ru.cristalix.core.scoreboard.IScoreboardService
 import ru.cristalix.core.scoreboard.ScoreboardService
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
-import ru.cristalix.tycoon.Classes.Healer
-import ru.cristalix.tycoon.Classes.Swordman
-import ru.cristalix.tycoon.Classes.Tank
 import ru.cristalix.tycoon.events.Events
 import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
 import ru.cristalix.tycoon.npc.LobbyNpc
-import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
-import ru.cristalix.tycoon.utils.maploader.MapLoader
-import ru.cristalix.tycoon.utils.selections.DungeonSelection
-import java.util.UUID
+import java.util.*
 
 const val SIMULATOR_ID = "DungSim"
 lateinit var app: App
@@ -43,7 +41,9 @@ class App : JavaPlugin() {
 
     lateinit var lobby : WorldMeta
     lateinit var maps : WorldMeta
-    val playerToClass = mutableMapOf<Player, String>()
+
+    var buildings = mutableListOf<Building>()
+
 
     override fun onEnable() {
         app = this
@@ -57,6 +57,9 @@ class App : JavaPlugin() {
         }
 
         B.events(JoinEvent(), Events(), MobListener(), ItemAbilities())
+
+        lobby = MapLoader.load("DungeonSim", "lobby")
+        maps = MapLoader.load("DungeonSim", "dungs")
 
         Anime.include(Kit.STANDARD, Kit.NPC, Kit.EXPERIMENTAL, Kit.LOOTBOX, Kit.DIALOG, Kit.DEBUG)
         ModLoader.loadAll("mods")
@@ -82,54 +85,39 @@ class App : JavaPlugin() {
             isLobbyServer = false
         }
 
-        lobby = MapLoader.load("DungeonSim", "lobby")!!
-        maps = MapLoader.load("DungeonSim", "dungs")!!
+
 
         LobbyNpc
+        Readers
 
-        command("dungeons") { sender, _ -> DungeonSelection.selection.open(sender) }
-        command("create_dungeon") { sender, _ ->
-            DungeonHelper.createDungeon(sender, "S")
-            ModTransfer().boolean(true).send("show-preparing", sender)
-            ModTransfer().string(sender.playerListName).send("user-connected", sender)
-            ModTransfer().boolean(true).send("show-start-btn", sender)
-        }
-
-        command("bars") { sender, _ -> ModTransfer().boolean(true).send("enable-bars", sender) }
-        command("ability") { sender, _ -> ModTransfer().boolean(true).send("enable-abilities", sender) }
-
-        val reload = mutableMapOf<Player, Boolean>()
-
-        Anime.createReader("btn:leave") { player, _ ->
-            player.sendMessage("Пака")
-        }
-
-        Anime.createReader("btn:start") { player, _ ->
-            player.sendMessage("Запускаю")
-        }
-
-        Anime.createReader("key_f") { player, _ ->
-            ModTransfer().send("reload-start", player)
-            after(19 * 20) {
-                reload[player] = false
-                ModTransfer().send("reload-end", player)
-
-            }
-
-            if (!(reload.containsKey(player))) { reload.set(player, false) }
-            if (reload[player] == false) {
-                val keyName = playerToClass[player]
-                when(keyName) {
-                    Swordman.keyName -> Swordman.unicAbility(player)
-                    Tank.keyName -> Tank.unicAbility(player)
-                    Healer.keyName -> Healer.unicAbility(player)
-                }
-                reload[player] = true
-            } else { player.sendMessage("Перезарядка") }
-        }
+        MetaWorld.universe(
+            lobby.world, *MetaSubscriber()
+                .buildingLoader { buildings }
+                .customModifier { chunk ->
+                    chunk.modify(
+                        BlockPosition(chunk.chunk.locX * 16, 0, chunk.chunk.locZ * 16),
+                        Block.getById(9).getBlockData()
+                    )
+                }.build()
+        )
 
     }
-    fun getSpawn(): Label = lobby.getLabel("spawn")
+    fun getSpawn(): me.func.world.Label {
+        return lobby.label("spawn", 0.5, 0.0, 0.5)!!
+    }
+//    fun create(): List<Building> {
+//        if (buildings.isEmpty())
+//            buildings.add(Building(UUID.fromString("b7fa1de3-a464-11e8-8374-1cb72caa35fd"), "test", "red", lobby).apply {
+//                allocate(Location(lobby.world, 0.0, 91.0, 0.0))
+//            }.onClick { player, packetPlayInUseItem -> player.sendMessage("Привет папаша!") }
+//                .onBreak { player, packetPlayInBlockDig -> (player as CraftPlayer).handle.playerConnection.sendPacket(
+//                    PacketPlayOutBlockChange().apply {
+//                    a = packetPlayInBlockDig.a
+//                    block = MetaWorld.storage[player.uniqueId]!!.buildings[0].allocation!!.blocks?.get(a)!!
+//                }) })
+//        return buildings
+//    }
+
 
 
 }

@@ -13,42 +13,48 @@ import ru.cristalix.tycoon.utils.selections.DungeonSelection
 import java.util.UUID
 
 object DungeonHelper {
+    var id1 = 1
     val selection = DungeonSelection.selection
 
-    val dungeonToButton = mutableMapOf<Dungeon, Button>()
     private var dungeons = mutableMapOf<UUID, Dungeon>()
-    fun getDungeon(uuid: UUID): Dungeon? { return dungeons[uuid]
+    fun getDungeon(uuid: UUID): Dungeon? { return dungeons[uuid] }
+
+    fun getDungeonByPlayer(player: Player): Dungeon? {
+        dungeons.values.forEach { dungeon ->
+            if (dungeon.players.contains(player)) { return dungeon }
+        }
+        return null
+    }
+
+    fun dungContainsPlayer(player: Player) : Boolean {
+        dungeons.values.forEach { dungeon ->
+            if (dungeon.players.contains(player)) { return true }
+        }
+        return false
     }
 
     fun createDungeon(player: Player, rank: String): Dungeon{
-        val buttonIndex = selection.storage.size
-        val dungeon = Dungeon(UUID.randomUUID(), player, rank, app.getSpawn().clone(),
-            mutableListOf(player), false, DungeonType.values().random(), buttonIndex)
+        val dungeon = Dungeon(UUID.randomUUID(), player, rank, app.lobby.label("dung")!!,
+            mutableListOf(player), false, DungeonType.values().random(), id1)
 
-        val desc = " "
-        dungeon.players.forEach {
-            desc + it.playerListName
-            player.sendMessage(it.playerListName)
-        }
+        dungeons[dungeon.uuid] = dungeon
 
-        player.sendMessage(desc)
-
-        createButton(player, dungeon, desc)
-        selection.open(player)
+        createButton(player, dungeon)
+        id1++
         return dungeon
+
     }
 
-    private fun createButton(player: Player,dungeon: Dungeon, desc: String) {
+    private fun createButton(player: Player,dungeon: Dungeon) {
         val button = button {
             //texture = голова игрока
             title = "Подземелье ${dungeon.rank} ранга"
-            description = desc
 
             onClick { player, _, _ ->
                 player.teleport(dungeon.location)
-                if (!(dungeon.players.contains(player))) {
-                    ModTransfer().boolean(true).send("show-preparing", player)
-                    ModTransfer().string(player.playerListName).send("user-connected", player)
+                if (!(dungContainsPlayer(player))) {
+                    ModTransfer().string(player.playerListName).integer(dungeon.idOfPreparing).send("user-connected", player)
+                    ModTransfer().integer(dungeon.idOfPreparing).send("show-preparing", player)
                 } else { player.sendMessage("Вы уже тут") }
                 dungeon.players.add(player)
 

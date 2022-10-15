@@ -2,12 +2,11 @@ package ru.cristalix.tycoon.utils.selections
 
 import me.func.mod.Anime
 import me.func.mod.selection.button
-import me.func.mod.selection.choicer
 import me.func.mod.selection.selection
-import ru.cristalix.tycoon.Classes.Healer
-import ru.cristalix.tycoon.Classes.Swordman
-import ru.cristalix.tycoon.Classes.Tank
-import ru.cristalix.tycoon.app
+import ru.cristalix.tycoon.classes.Healer
+import ru.cristalix.tycoon.classes.Swordman
+import ru.cristalix.tycoon.classes.Tank
+import ru.cristalix.tycoon.Readers
 
 object ClassChoicer {
     val choicer = selection {
@@ -20,7 +19,7 @@ object ClassChoicer {
                 hint = "Выбрать"
                 texture = "minecraft:textures/items/iron_sword.png"
                 onClick { player, _, _ ->
-                    app.playerToClass[player] = Swordman.keyName
+                    Readers.playerToClass[player] = Swordman.keyName
                     Anime.close(player)
                 }
             },
@@ -30,7 +29,7 @@ object ClassChoicer {
                 hint = "Выбрать"
                 texture = "minecraft:textures/items/totem.png"
                 onClick { player, _, _ ->
-                    app.playerToClass[player] = Tank.keyName
+                    Readers.playerToClass[player] = Tank.keyName
                     Anime.close(player)
                 }
             },
@@ -40,7 +39,7 @@ object ClassChoicer {
                 hint = "Выбрать"
                 texture = "minecraft:textures/items/emerald.png"
                 onClick { player, _, _ ->
-                    app.playerToClass[player] = Healer.keyName
+                    Readers.playerToClass[player] = Healer.keyName
                     Anime.close(player)
                 }
             }

@@ -1,29 +1,21 @@
 package ru.cristalix.tycoon.utils.mobs
 
-import jdk.internal.util.xml.impl.ReaderUTF8
 import net.minecraft.server.v1_12_R1.AttributeModifier
-import net.minecraft.server.v1_12_R1.EntityInsentient
-import net.minecraft.server.v1_12_R1.EnumItemSlot
 import net.minecraft.server.v1_12_R1.GenericAttributes
-import net.minecraft.server.v1_12_R1.ItemStack
-import net.minecraft.server.v1_12_R1.NBTTagCompound
-import net.minecraft.server.v1_12_R1.PersistentBase
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
+import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntityLiving
+import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getEntity
 import org.bukkit.Location
-import org.bukkit.NamespacedKey
 import org.bukkit.Particle
-import org.bukkit.World
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
 import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import ru.cristalix.tycoon.app
-import ru.cristalix.tycoon.items.Armor
 import ru.cristalix.tycoon.utils.NBT
 import ru.cristalix.tycoon.utils.NBTEntity
-import java.util.UUID
+import java.util.*
 
 
 object MobHelper {
@@ -45,6 +37,7 @@ object MobHelper {
 
         spawningMob.customName = NBTEntity(spawningMob).getInt("health").toString()
         spawningMob.isCustomNameVisible = true
+
     }
 
     fun getProtection(entity: Entity): Int{
@@ -91,6 +84,13 @@ object MobHelper {
         getEntity(uuid).remove()
         killer.exp + NBTEntity(getEntity(uuid)).getInt("xp")
     }
+
+//    fun hideEntity(entity: LivingEntity) {
+//        for (on in Bukkit.getServer().onlinePlayers) {
+//            val packet = PacketPlayOutSpawnEntityLiving
+//            (on as CraftPlayer).handle.playerConnection.sendPacket(packet)
+//        }
+//    }
 
 //    fun checkAliveMobs(world: World): Boolean {
 //        world.entities.forEach { entity ->
