@@ -50,6 +50,7 @@ object DungeonHelper {
         val button = button {
             //texture = голова игрока
             title = "Подземелье ${dungeon.rank.name} ранга"
+            description = "Создатель: ${player.playerListName}"
 
             onClick { player, _, _ ->
                 if (!(dungContainsPlayer(player))) {
