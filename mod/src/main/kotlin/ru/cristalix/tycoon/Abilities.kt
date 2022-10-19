@@ -32,8 +32,10 @@ class Abilities {
     }
 
     init {
-        bgF.addChild(abilityF)
-        UIEngine.overlayContext + bgF
+        mod.registerChannel("unlock-abilities") {
+            bgF.addChild(abilityF)
+            UIEngine.overlayContext + bgF
+        }
 
 
         mod.registerChannel("enable-abilities") {
