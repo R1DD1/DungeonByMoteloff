@@ -13,9 +13,11 @@ import kotlin.math.min
 class BarManager {
 
     private var healthIndicator: HealthIndicator? = null
+    private var experienceIndicator: ExperienceIndicator? = null
 
 
     private var health = 0
+    private var exp = 0.0F
 
 
     init {
@@ -32,7 +34,12 @@ class BarManager {
             val healthLevel = clientApi.minecraft().player.health.toInt()
             val maxHealth = clientApi.minecraft().player.maxHealth.toInt()
 
+            val level = clientApi.minecraft().player.experienceLevel
+            val expLevel = clientApi.minecraft().player.experience
+
+            exp = expLevel
             health = healthLevel
+            experienceIndicator?.updatePercentage(expLevel, 1F, level)
             healthIndicator?.updatePercentage(healthLevel, maxHealth)
 
         }
@@ -40,6 +47,7 @@ class BarManager {
         mod.registerChannel("enable-bars") {
             val status = readBoolean()
             healthIndicator!!.enabled = status
+            experienceIndicator!!.enabled = status
 
         }
 
@@ -56,9 +64,11 @@ class BarManager {
 
     private fun display() {
         healthIndicator = HealthIndicator()
+        experienceIndicator = ExperienceIndicator()
 
 
         healthIndicator!!.bar.color = Color(250, 0, 0)
+        experienceIndicator!!.bar.color = Color(10, 160, 10)
 
 
         val parent = rectangle {
@@ -66,7 +76,7 @@ class BarManager {
             align = Relative.BOTTOM
             offset.y = -14.0
         }
-        parent.addChild(healthIndicator!!)
+        parent.addChild(healthIndicator!!, experienceIndicator!!)
 
         UIEngine.overlayContext.addChild(parent)
     }
@@ -86,10 +96,10 @@ class HealthIndicator : CarvedRectangle() {
 
     init {
         color = Color(0, 0, 0, 0.68)
-        offset = V3(100.0, -15.0)
+        offset = V3(-7.0, -15.0)
         align = Relative.CENTER
         origin = Relative.RIGHT
-        size = V3(200.0, 10.0)
+        size = V3(85.0, 10.0)
 
         val parentSize = size
 
@@ -108,5 +118,54 @@ class HealthIndicator : CarvedRectangle() {
             bar.size.x = maxX * min(1.0, current / max.toDouble())
         }
         this.text.content = "§f$current HP"
+    }
+}
+
+class ExperienceIndicator : CarvedRectangle() {
+    var bar: RectangleElement
+    private val text: TextElement = text {
+        origin = Relative.CENTER
+        align = Relative.CENTER
+        offset.x = 4.0
+    }
+
+    var maxX: Double
+
+    init {
+        color = Color(0, 0, 0, 0.68)
+        offset = V3(90.0, -15.0)
+        align = Relative.CENTER
+        origin = Relative.RIGHT
+        size = V3(85.0, 10.0)
+
+        val parentSize = size
+
+        bar = carved {
+            color = WHITE
+            size = parentSize
+            carveSize = 1.0
+        }
+        this.maxX = bar.size.x
+
+        addChild(bar, text)
+    }
+    fun updatePercentage(current: Float, max: Float, level: Int) {
+        bar.animate(0.1, Easings.CUBIC_OUT) {
+            bar.size.x = maxX * current
+        }
+        var levelInString: String = level.toString()
+        when (levelInString) {
+            "0" -> levelInString = "F"
+            "1" -> levelInString = "E"
+            "2" -> levelInString = "D"
+            "3" -> levelInString = "C"
+            "4" -> levelInString = "B"
+            "5" -> levelInString = "A"
+            "6" -> levelInString = "S"
+            "7" -> levelInString = "S+"
+            "8" -> levelInString = "SSS"
+
+        }
+        this.text.content = "§f$levelInString "
     }
 }

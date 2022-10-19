@@ -10,6 +10,7 @@ import ru.cristalix.tycoon.classes.Swordman
 import ru.cristalix.tycoon.classes.Tank
 import ru.cristalix.tycoon.buildings.BuildingsHelper
 import ru.cristalix.tycoon.utils.dungeon.DungeonHelper
+import ru.cristalix.tycoon.utils.dungeon.DungeonType
 import ru.cristalix.tycoon.utils.selections.DungeonSelection
 
 object Readers {
@@ -23,7 +24,7 @@ object Readers {
         }
 
         Anime.createReader("btn:start") { player, _ ->
-            BuildingsHelper.create("testBox", player)
+            BuildingsHelper.create("testBox", DungeonType.DEFAULT, Rank.B,player)
         }
 
         Anime.createReader("key_f") { player, _ ->
@@ -34,7 +35,7 @@ object Readers {
 
             }
 
-            if (!(reload.containsKey(player))) { reload.set(player, false) }
+            if (!(reload.containsKey(player))) { reload[player] = false }
             if (reload[player] == false) {
                 val keyName = playerToClass[player]
                 when(keyName) {
@@ -49,8 +50,8 @@ object Readers {
         command("dungeons") { sender, _ -> DungeonSelection.selection.open(sender) }
         command("create_dungeon") { sender, _ ->
             if (!(DungeonHelper.dungContainsPlayer(sender))) {
-                val dung = DungeonHelper.createDungeon(sender, "S")
-                ModTransfer().integer(dung.idOfPreparing).send("create-preparing", sender)
+                val dung = DungeonHelper.createDungeon(sender, Rank.B)
+                ModTransfer().string(Rank.B.name).integer(dung.idOfPreparing).send("create-preparing", sender)
                 ModTransfer().string(sender.playerListName).integer(dung.idOfPreparing).send("user-connected", sender)
             } else { sender.sendMessage("Ты и так в данже") }
 

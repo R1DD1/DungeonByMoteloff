@@ -31,6 +31,7 @@ import ru.cristalix.tycoon.events.ItemAbilities
 import ru.cristalix.tycoon.events.JoinEvent
 import ru.cristalix.tycoon.events.MobListener
 import ru.cristalix.tycoon.npc.LobbyNpc
+import ru.cristalix.tycoon.npc.Npc
 import java.util.*
 
 const val SIMULATOR_ID = "DungSim"
@@ -86,8 +87,7 @@ class App : JavaPlugin() {
         }
 
 
-
-        LobbyNpc
+        Npc
         Readers
 
         MetaWorld.universe(

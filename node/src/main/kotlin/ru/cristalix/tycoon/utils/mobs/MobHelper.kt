@@ -20,7 +20,7 @@ import java.util.*
 
 object MobHelper {
 
-    fun spawnMob(mob: MobType, location: Location) {
+    fun spawnMob(mob: MobType, location: Location): LivingEntity {
         val spawningMob = location.world.spawnEntity(location, mob.getType()) as LivingEntity
 
         val list = mob.getEquipment()
@@ -38,6 +38,7 @@ object MobHelper {
         spawningMob.customName = NBTEntity(spawningMob).getInt("health").toString()
         spawningMob.isCustomNameVisible = true
 
+        return spawningMob
     }
 
     fun getProtection(entity: Entity): Int{

@@ -13,7 +13,7 @@ import java.util.UUID
 class Preparing {
     var curY: Int = -55
 //    val preparingMenu: PreparingMenu = PreparingMenu()
-    val preparings = mutableListOf<PreparingMenu>()
+    private val preparings = mutableListOf<PreparingMenu>()
 
     private val leaveButton = carved {
         align = BOTTOM
@@ -76,6 +76,15 @@ class Preparing {
         scale = V3(0.8, 0.8)
     }
 
+    private val rankText = text {
+        content = "Ранг:"
+        offset.x += -40
+        offset.y += 35
+        align = TOP
+        origin = TOP_LEFT
+        scale = V3(0.8, 0.8)
+    }
+
     init {
 //        mod.registerChannel("show-preparing") {
 //            val status = readBoolean()
@@ -119,12 +128,14 @@ class Preparing {
         mod.registerChannel("show-preparing") {
             val id = readInt()
             startButton.enabled = false
-            UIEngine.overlayContext + getPreparingById(id)
+            display(getPreparingById(id))
         }
 
         mod.registerChannel("create-preparing") {
+            val rank = dev.xdark.feder.NetUtil.readUtf8(this)
             val id = readInt()
-            val preparing = PreparingMenu(id, )
+            val preparing = PreparingMenu(id)
+            rankText.content = "Ранг подземелья: $rank"
             preparings.add(preparing)
             preparing.enabled = true
             startButton.enabled = true
@@ -143,7 +154,7 @@ class Preparing {
     private fun display(preparingMenu: PreparingMenu) {
         startButton.addChild(startButtonText)
         leaveButton.addChild(leaveButtonText)
-        preparingMenu.addChild(title, users, leaveButton, startButton)
+        preparingMenu.addChild(title, users, rankText, leaveButton, startButton)
 
         UIEngine.overlayContext + preparingMenu
     }

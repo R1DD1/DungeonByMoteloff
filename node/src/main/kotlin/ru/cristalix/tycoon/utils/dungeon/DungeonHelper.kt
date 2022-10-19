@@ -6,6 +6,7 @@ import me.func.mod.selection.button
 import me.func.mod.selection.selection
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import ru.cristalix.tycoon.Rank
 import ru.cristalix.tycoon.User
 import ru.cristalix.tycoon.app
 import ru.cristalix.tycoon.elements.Dungeon
@@ -33,8 +34,8 @@ object DungeonHelper {
         return false
     }
 
-    fun createDungeon(player: Player, rank: String): Dungeon{
-        val dungeon = Dungeon(UUID.randomUUID(), player, rank, app.lobby.label("dung")!!,
+    fun createDungeon(player: Player, rank: Rank): Dungeon{
+        val dungeon = Dungeon(UUID.randomUUID(), player, rank,
             mutableListOf(player), false, DungeonType.values().random(), id1)
 
         dungeons[dungeon.uuid] = dungeon
@@ -48,10 +49,9 @@ object DungeonHelper {
     private fun createButton(player: Player,dungeon: Dungeon) {
         val button = button {
             //texture = голова игрока
-            title = "Подземелье ${dungeon.rank} ранга"
+            title = "Подземелье ${dungeon.rank.name} ранга"
 
             onClick { player, _, _ ->
-                player.teleport(dungeon.location)
                 if (!(dungContainsPlayer(player))) {
                     ModTransfer().string(player.playerListName).integer(dungeon.idOfPreparing).send("user-connected", player)
                     ModTransfer().integer(dungeon.idOfPreparing).send("show-preparing", player)
