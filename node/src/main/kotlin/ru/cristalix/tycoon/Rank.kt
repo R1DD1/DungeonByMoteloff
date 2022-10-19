@@ -11,4 +11,5 @@ enum class Rank(private val rankInt: Int) {
     E(2),
     F(1);
 
+    fun getLevel() = rankInt
 }

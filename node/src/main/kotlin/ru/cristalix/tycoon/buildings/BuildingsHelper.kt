@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
 import ru.cristalix.tycoon.Rank
 import ru.cristalix.tycoon.app
 import ru.cristalix.tycoon.npc.LobbyNpc
+import ru.cristalix.tycoon.utils.NBTEntity
 import ru.cristalix.tycoon.utils.dungeon.DungeonType
 import ru.cristalix.tycoon.utils.mobs.MobHelper
 import ru.cristalix.tycoon.utils.mobs.MobType
@@ -60,6 +61,15 @@ object BuildingsHelper {
         for (i in 0..idToLabel.size) {
             val loc = box.requireLabel(idToLabel[i]!!)
 
+        }
+    }
+
+    fun expFormula(mob: Entity, rank: Rank) {
+        if (NBTEntity(mob).contains("xp")) {
+            val defaultExp = NBTEntity(mob).getDouble("xp")
+            val bonusExp = 0.03 * rank.getLevel()
+            NBTEntity(mob).removeTag("xp")
+            NBTEntity(mob).setTag("xp", defaultExp + bonusExp)
         }
     }
 
