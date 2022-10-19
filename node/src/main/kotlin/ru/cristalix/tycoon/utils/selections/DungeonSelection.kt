@@ -10,6 +10,7 @@ object DungeonSelection {
         columns = 3
         hint = "Подключится"
         buttons()
+
     }
 
 //    fun addUserToDung(index: Int) {

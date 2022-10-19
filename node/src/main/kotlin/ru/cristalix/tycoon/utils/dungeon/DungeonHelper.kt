@@ -57,6 +57,8 @@ object DungeonHelper {
                     ModTransfer().integer(dungeon.idOfPreparing).send("show-preparing", player)
                 } else { player.sendMessage("Вы уже тут") }
                 dungeon.players.add(player)
+                ModTransfer().boolean(true).send("enable-bars", player)
+                ModTransfer().boolean(true).send("enable-abilities", player)
 
 
             }

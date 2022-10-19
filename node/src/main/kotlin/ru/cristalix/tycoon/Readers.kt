@@ -47,15 +47,15 @@ object Readers {
             } else { player.sendMessage("Перезарядка") }
         }
 
-        command("dungeons") { sender, _ -> DungeonSelection.selection.open(sender) }
-        command("create_dungeon") { sender, _ ->
-            if (!(DungeonHelper.dungContainsPlayer(sender))) {
-                val dung = DungeonHelper.createDungeon(sender, Rank.B)
-                ModTransfer().string(Rank.B.name).integer(dung.idOfPreparing).send("create-preparing", sender)
-                ModTransfer().string(sender.playerListName).integer(dung.idOfPreparing).send("user-connected", sender)
-            } else { sender.sendMessage("Ты и так в данже") }
-
-        }
+//        command("dungeons") { sender, _ -> DungeonSelection.selection.open(sender) }
+//        command("create_dungeon") { sender, _ ->
+//            if (!(DungeonHelper.dungContainsPlayer(sender))) {
+//                val dung = DungeonHelper.createDungeon(sender, Rank.B)
+//                ModTransfer().string(Rank.B.name).integer(dung.idOfPreparing).send("create-preparing", sender)
+//                ModTransfer().string(sender.playerListName).integer(dung.idOfPreparing).send("user-connected", sender)
+//            } else { sender.sendMessage("Ты и так в данже") }
+//
+//        }
 
         command("bars") { sender, _ -> ModTransfer().boolean(true).send("enable-bars", sender) }
         command("ability") { sender, _ -> ModTransfer().boolean(true).send("enable-abilities", sender) }

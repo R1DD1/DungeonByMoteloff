@@ -48,9 +48,8 @@ class Preparing {
         onLeftClick {
             UIEngine.clientApi.clientConnection().sendPayload("btn:start", Unpooled.EMPTY_BUFFER)
         }
-
-
     }
+
     private val startButtonText = text {
         content = "Начать"
         origin = CENTER
@@ -67,6 +66,7 @@ class Preparing {
         offset.y += 10
         offset.x += 3
     }
+
     private val users = text {
         content = "Участники:"
         offset.x += -40
@@ -79,25 +79,13 @@ class Preparing {
     private val rankText = text {
         content = "Ранг:"
         offset.x += -40
-        offset.y += 35
+        offset.y += 100
         align = TOP
         origin = TOP_LEFT
         scale = V3(0.8, 0.8)
     }
 
     init {
-//        mod.registerChannel("show-preparing") {
-//            val status = readBoolean()
-//            val uuid = dev.xdark.feder.NetUtil.readUtf8(this)
-//            getPreparingByUUID(UUID.fromString(uuid))!!.enabled = status
-//            display(getPreparingByUUID(UUID.fromString(uuid))!!)
-//        }
-
-//        mod.registerChannel("show-start-btn") {
-//            val status = readBoolean()
-//            val uuid = dev.xdark.feder.NetUtil.readUtf8(this)
-//            startButton.enabled = status
-//        }
         mod.registerChannel("user-leave") {
             val name = dev.xdark.feder.NetUtil.readUtf8(this)
             val id = readInt()

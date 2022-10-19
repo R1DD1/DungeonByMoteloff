@@ -1,8 +1,5 @@
 import ru.cristalix.clientapi.KotlinMod
-import ru.cristalix.tycoon.Abilities
-import ru.cristalix.tycoon.EntityManager
-import ru.cristalix.tycoon.KeyLogger
-import ru.cristalix.tycoon.Preparing
+import ru.cristalix.tycoon.*
 import ru.cristalix.uiengine.UIEngine
 
 
@@ -19,5 +16,6 @@ class App : KotlinMod() {
         Abilities()
         Preparing()
         EntityManager()
+        Blacksmith()
     }
 }
