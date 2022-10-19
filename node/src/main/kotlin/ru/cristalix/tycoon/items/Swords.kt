@@ -105,5 +105,19 @@ enum class Swords(private var itemStack: ItemStack) {
         }.build()
     ),;
 
-    fun get(): ItemStack{ return itemStack.clone() }
+    fun get(): ItemStack{
+        val lore = arrayListOf<String>()
+        lore.add("Урон: ${NBT(itemStack).getInt("damage")}")
+        lore.add("Крит. урон: ${NBT(itemStack).getInt("critical-damage")}")
+        val test = NBT(itemStack).getInt("critical-chance")
+//        val test1 = test/100
+        lore.add("Крит. шанс: ${(test/100).toFloat()}")
+        lore.add("Особая способность - ${NBT(itemStack).getString("abilities")}")
+        itemStack.lore = lore
+        return itemStack.clone()
+    }
+
+    val descriptionAbilities = mapOf<String, String>(
+
+    )
 }

@@ -12,6 +12,7 @@ import me.func.protocol.dialog.*
 import me.func.protocol.npc.NpcBehaviour
 import org.bukkit.entity.Player
 import ru.cristalix.tycoon.app
+import ru.cristalix.tycoon.forge.Forge
 import ru.cristalix.tycoon.utils.selections.DungeonSelection
 
 enum class LobbyNpc(private val npc: NpcSmart) {
@@ -40,7 +41,8 @@ enum class LobbyNpc(private val npc: NpcSmart) {
         name = "Кузнец"
 
         onClick {
-            ModTransfer().send("show-smith", it.player)
+//            ModTransfer().send("show-smith", it.player)
+                it.player.inventory.setItem(0, Forge.upgrade(it.player.equipment.itemInMainHand, it.player))
             }
         }
     ),
