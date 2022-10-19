@@ -8,6 +8,20 @@ import ru.cristalix.tycoon.utils.NBT
 import kotlin.random.Random
 
 enum class Swords(private var itemStack: ItemStack) {
+    MONEY(
+        itemBuilder {
+            type = Material.GOLD_INGOT
+            text("Монеты")
+            nbt(
+                mapOf(
+                    "money" to true,
+                    "count" to 10
+                )
+            )
+            nbt("Unbreakable", 1)
+            nbt("HideFlags", 127)
+        }.build()
+    ),
     DEFAULT_SWORD(
         itemBuilder {
             type = Material.STONE_SWORD
@@ -107,13 +121,14 @@ enum class Swords(private var itemStack: ItemStack) {
 
     fun get(): ItemStack{
         val lore = arrayListOf<String>()
-        lore.add("Урон: ${NBT(itemStack).getInt("damage")}")
-        lore.add("Крит. урон: ${NBT(itemStack).getInt("critical-damage")}")
-        val test = NBT(itemStack).getInt("critical-chance")
-//        val test1 = test/100
-        lore.add("Крит. шанс: ${(test/100).toFloat()}")
-        lore.add("Особая способность - ${NBT(itemStack).getString("abilities")}")
-        itemStack.lore = lore
+        if (!(NBT(itemStack).contains("money"))) {
+            lore.add("Урон: ${NBT(itemStack).getInt("damage")}")
+            lore.add("Крит. урон: ${NBT(itemStack).getInt("critical-damage")}")
+            val test = NBT(itemStack).getInt("critical-chance")
+            lore.add("Крит. шанс: ${(test/100).toFloat()}")
+            lore.add("Особая способность - ${NBT(itemStack).getString("abilities")}")
+            itemStack.lore = lore
+        }
         return itemStack.clone()
     }
 

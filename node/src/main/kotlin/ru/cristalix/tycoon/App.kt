@@ -26,10 +26,7 @@ import ru.cristalix.core.scoreboard.IScoreboardService
 import ru.cristalix.core.scoreboard.ScoreboardService
 import ru.cristalix.core.transfer.ITransferService
 import ru.cristalix.core.transfer.TransferService
-import ru.cristalix.tycoon.events.Events
-import ru.cristalix.tycoon.events.ItemAbilities
-import ru.cristalix.tycoon.events.JoinEvent
-import ru.cristalix.tycoon.events.MobListener
+import ru.cristalix.tycoon.events.*
 import ru.cristalix.tycoon.npc.LobbyNpc
 import ru.cristalix.tycoon.npc.Npc
 import java.util.*
@@ -57,7 +54,7 @@ class App : JavaPlugin() {
             registerService(IScoreboardService::class.java, ScoreboardService())
         }
 
-        B.events(JoinEvent(), Events(), MobListener(), ItemAbilities())
+        B.events(JoinEvent(), Events(), MobListener(), ItemAbilities(), LevelListener())
 
         lobby = MapLoader.load("DungeonSim", "lobby")
         maps = MapLoader.load("DungeonSim", "dungs")

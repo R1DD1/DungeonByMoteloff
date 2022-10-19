@@ -49,7 +49,7 @@ object BuildingsHelper {
         }
     }
 
-    fun placeMobsOnMaps(map: DungeonType, box: Box) {
+    fun placeMobsOnMaps(map: DungeonType, box: Box, rank: Rank) {
         val idToLabel = mapOf(
                 0 to "zombies",
                 1 to "skeletons",
@@ -59,7 +59,7 @@ object BuildingsHelper {
         val countsMobs = map.getCountMobs()
         for (i in 0..idToLabel.size) {
             val loc = box.requireLabel(idToLabel[i]!!)
-            box
+
         }
     }
 
