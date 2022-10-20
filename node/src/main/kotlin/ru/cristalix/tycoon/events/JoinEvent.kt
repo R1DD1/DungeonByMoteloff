@@ -20,7 +20,9 @@ class JoinEvent : Listener {
         after(20){
             //Если игрок не существует
 //            player.inventory.clear()
-            player.inventory.setItem(0, Swords.DEFAULT_SWORD.get())
+            Swords.values().forEach {
+                player.inventory.addItem(it.get())
+            }
 
         }
     }

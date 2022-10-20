@@ -22,13 +22,14 @@ enum class Swords(private var itemStack: ItemStack) {
             nbt("HideFlags", 127)
         }.build()
     ),
-    DEFAULT_SWORD(
+    BEGINNER_SWORD(
         itemBuilder {
             type = Material.STONE_SWORD
             text("Меч новичка")
             nbt(
                 mapOf(
                     "sword" to true,
+                    "rank" to "G",
                     "damage" to 10,
                     "critical-chance" to 1,
                     "critical-damage" to 13,
@@ -40,6 +41,82 @@ enum class Swords(private var itemStack: ItemStack) {
 
         }.build()
     ),
+    WARRIOR_SWORD(
+            itemBuilder {
+                type = Material.STONE_SWORD
+                text("Меч воина")
+                nbt(
+                        mapOf(
+                                "sword" to true,
+                                "rank" to "F",
+                                "damage" to 12,
+                                "critical-chance" to 1,
+                                "critical-damage" to 15,
+                                "abilities" to "null"
+                        )
+                )
+                nbt("Unbreakable", 1)
+                nbt("HideFlags", 127)
+
+            }.build()
+    ),
+    GUARDIAN_SWORD(
+            itemBuilder {
+                type = Material.STONE_SWORD
+                text("Меч стражника")
+                nbt(
+                        mapOf(
+                                "sword" to true,
+                                "rank" to "E",
+                                "damage" to 14,
+                                "critical-chance" to 5,
+                                "critical-damage" to 16,
+                                "abilities" to "null"
+                        )
+                )
+                nbt("Unbreakable", 1)
+                nbt("HideFlags", 127)
+
+            }.build()
+    ),
+    ADVENTURER_SWORD(
+            itemBuilder {
+                type = Material.STONE_SWORD
+                text("Меч авантюриста")
+                nbt(
+                        mapOf(
+                                "sword" to true,
+                                "rank" to "D",
+                                "damage" to 15,
+                                "critical-chance" to 5,
+                                "critical-damage" to 17,
+                                "abilities" to "null"
+                        )
+                )
+                nbt("Unbreakable", 1)
+                nbt("HideFlags", 127)
+
+            }.build()
+    ),
+    COMMANDER_SWORD(
+            itemBuilder {
+                type = Material.STONE_SWORD
+                text("Меч полководца")
+                nbt(
+                        mapOf(
+                                "sword" to true,
+                                "rank" to "C",
+                                "damage" to 17,
+                                "critical-chance" to 10,
+                                "critical-damage" to 18,
+                                "abilities" to "null"
+                        )
+                )
+                nbt("Unbreakable", 1)
+                nbt("HideFlags", 127)
+
+            }.build()
+    ),
     IGNITE_SWORD(
         itemBuilder {
             type = Material.IRON_SWORD
@@ -48,6 +125,7 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
+                    "rank" to "A",
                     "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "ignite",
@@ -66,6 +144,7 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
+                    "rank" to "S",
                     "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "knock",
@@ -84,6 +163,7 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
+                    "rank" to "B",
                     "critical-chance" to 5,
                     "critical-damage" to 25,
                     "abilities" to "tp",
@@ -102,6 +182,7 @@ enum class Swords(private var itemStack: ItemStack) {
                 mapOf(
                     "sword" to true,
                     "damage" to 20,
+                    "rank" to "S",
                     "critical-chance" to 10,
                     "critical-damage" to 25,
                     "abilities" to "lightning",
@@ -122,10 +203,10 @@ enum class Swords(private var itemStack: ItemStack) {
     fun get(): ItemStack{
         val lore = arrayListOf<String>()
         if (!(NBT(itemStack).contains("money"))) {
+            lore.add("Уровень предмета: ${NBT(itemStack).getString("rank")}")
             lore.add("Урон: ${NBT(itemStack).getInt("damage")}")
             lore.add("Крит. урон: ${NBT(itemStack).getInt("critical-damage")}")
-            val test = NBT(itemStack).getInt("critical-chance")
-            lore.add("Крит. шанс: ${(test/100).toFloat()}")
+            lore.add("Крит. шанс: ${NBT(itemStack).getInt("critical-chance")}%")
             lore.add("Особая способность - ${NBT(itemStack).getString("abilities")}")
             itemStack.lore = lore
         }
